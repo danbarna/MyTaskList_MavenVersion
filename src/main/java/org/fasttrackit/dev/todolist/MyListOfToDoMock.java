@@ -12,11 +12,13 @@ import java.util.*;
 public class MyListOfToDoMock {
 
     private static MyListOfToDoMock m;
+    private static DataBase db;
 
     public static MyListOfToDoMock getInstance() {
 
         if(m==null) {
             m=new MyListOfToDoMock();
+             db=new DataBase();
             m.generateInitialList();
         }
        return m;
@@ -34,9 +36,10 @@ public class MyListOfToDoMock {
 //        toDoList.add(new ToDoBean(5,"sa imi fac tema la geogra"));
 //        toDoList.add(new ToDoBean(6,"sa imi sun bunica"));
 //        id=6;
-        DataBase db=new DataBase();
+
         try {
             db.demoRead(this);
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -46,10 +49,10 @@ public class MyListOfToDoMock {
 
    public void addItem(String value) {
        toDoList= new ArrayList<ToDoBean>();
-       DataBase db=new DataBase(value,false);
        try {
-           db.demoCreate();
+           db.demoCreate(value,false);
            db.demoRead(this);
+
        } catch (ClassNotFoundException e) {
            e.printStackTrace();
        } catch (SQLException e) {
@@ -59,14 +62,30 @@ public class MyListOfToDoMock {
    }
 
     public void doneItem(int index) {
-        for (ListIterator<ToDoBean> iter = toDoList.listIterator(); iter.hasNext(); ) {
-            ToDoBean element = iter.next();
+//        for (ListIterator<ToDoBean> iter = toDoList.listIterator(); iter.hasNext(); ) {
+//            ToDoBean element = iter.next();
+//
+//            if (element.getId()==index) {
+//                element.setDone(true);
+//                iter.set(element);
+//            }
+//
+//
+//    }
 
-            if (element.getId()==index) {
-                element.setDone(true);
-                iter.set(element);
-            }
+
+        toDoList= new ArrayList<ToDoBean>();;;;;
+        try {
+            db.demoDelete(index);
+            db.demoRead(this);
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+
     }
 
 

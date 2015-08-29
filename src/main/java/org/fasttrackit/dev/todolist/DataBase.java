@@ -6,31 +6,23 @@ import java.sql.*;
  * Created by user376 on 29.08.2015.
  */
 public class DataBase {
-    private String whatToDo;
-    private boolean isDone;
-    public DataBase(String whatToDo,boolean isDone)
-    {
-        this.whatToDo=whatToDo;
-        this.isDone=isDone;
-    }
+    private static Connection conn;
+
 
     public DataBase()
     {
     }
-    public void demoCreate() throws ClassNotFoundException, SQLException {
+    public void demoCreate(String whatToDo, boolean isDone) throws ClassNotFoundException, SQLException {
 
         System.out.println("incep");
         // 1. load driver
-        Class.forName("org.postgresql.Driver");
-
-        // 2. define connection params to db
-        final String URL = "jdbc:postgresql://54.93.65.5:5432/Dan_Agenda";
-        final String USERNAME = "fasttrackit_dev";
-        final String PASSWORD = "fasttrackit_dev";
-
-        // 3. obtain a connection
-        Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-
+        if (conn==null) {
+            conn = getConnection();
+        }
+        else
+        {
+            System.out.println("----------------------deja am conex");
+        }
         System.out.println("am obtinut conex");
         // 4. create a query statement
         PreparedStatement pSt = conn.prepareStatement("INSERT INTO \"mytasklist\" (activitate,stare) VALUES (?,?)");
@@ -45,21 +37,18 @@ public class DataBase {
         System.out.println("executat");
         // 6. close the objects
         pSt.close();
-        conn.close();
         System.out.println("gata");
     }
-    public static void demoRead(MyListOfToDoMock mm) throws ClassNotFoundException, SQLException {
+    public  void demoRead(MyListOfToDoMock mm) throws ClassNotFoundException, SQLException {
         // 1. load driver
-        Class.forName("org.postgresql.Driver");
-
-        // 2. define connection params to db
-        final String URL = "jdbc:postgresql://54.93.65.5:5432/Dan_Agenda";
-        final String USERNAME = "fasttrackit_dev";
-        final String PASSWORD = "fasttrackit_dev";
-
-        // 3. obtain a connection
-        Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-
+        if (conn==null) {
+            System.out.println("wwwwwwwwwwwww uite conex");
+            conn=getConnection();
+        }
+        else
+        {
+            System.out.println("----------------------deja am conex");
+        }
         // 4. create a query statement
         Statement st = conn.createStatement();
 
@@ -75,11 +64,30 @@ public class DataBase {
         // 7. close the objects
         rs.close();
         st.close();
-        conn.close();
-    }
-    private static void demoDelete() throws ClassNotFoundException, SQLException {
 
-        // 1. load driver
+    }
+    public  void demoDelete(int key) throws ClassNotFoundException, SQLException {
+
+        if (conn==null) {
+            conn = getConnection();
+        }
+        else
+        {
+            System.out.println("----------------------deja am conex");
+        }
+        // 4. create a query statement
+        PreparedStatement pSt = conn.prepareStatement("update \"mytasklist\" set stare=? where id=?");
+        pSt.setBoolean(1, true);
+        pSt.setInt(2, key);
+
+        // 5. execute a prepared statement
+        int rowsDeleted = pSt.executeUpdate();
+        System.out.println(rowsDeleted + " rows were updated.");
+        // 6. close the objects
+        pSt.close();
+    }
+
+    private Connection getConnection() throws ClassNotFoundException, SQLException {
         Class.forName("org.postgresql.Driver");
 
         // 2. define connection params to db
@@ -88,17 +96,6 @@ public class DataBase {
         final String PASSWORD = "fasttrackit_dev";
 
         // 3. obtain a connection
-        Connection conn = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-
-        // 4. create a query statement
-        PreparedStatement pSt = conn.prepareStatement("DELETE FROM \"Persoana\" WHERE id=?");
-        pSt.setLong(1, 11);
-
-        // 5. execute a prepared statement
-        int rowsDeleted = pSt.executeUpdate();
-        System.out.println(rowsDeleted + " rows were deleted.");
-        // 6. close the objects
-        pSt.close();
-        conn.close();
+        return DriverManager.getConnection(URL, USERNAME, PASSWORD);
     }
 }

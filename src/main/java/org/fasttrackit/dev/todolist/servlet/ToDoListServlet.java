@@ -103,19 +103,19 @@ public class ToDoListServlet extends HttpServlet {
         int id = Integer.parseInt(idS);
         MyListOfToDoMock myListObject = MyListOfToDoMock.getInstance();
 
-        myListObject.printList();
-
+       // myListObject.printList();
+myListObject.doneItem(id);
 
         List<ToDoBean> l = myListObject.getList();
-        for (ListIterator<ToDoBean> iterator = l.listIterator(); iterator.hasNext(); ) {
-            ToDoBean element = iterator.next();
-
-            if (element.getId() == id) {
-                System.out.println("found it, now canceling");
-                element.setDone(true);
-                iterator.set(element);
-            }
-        }
+//        for (ListIterator<ToDoBean> iterator = l.listIterator(); iterator.hasNext(); ) {
+//            ToDoBean element = iterator.next();
+//
+//            if (element.getId() == id) {
+//                System.out.println("found it, now canceling");
+//                element.setDone(true);
+//                iterator.set(element);
+//            }
+//        }
 
         System.out.println("i am done");
     }
