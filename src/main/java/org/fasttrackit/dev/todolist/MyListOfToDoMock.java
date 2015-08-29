@@ -2,6 +2,7 @@ package org.fasttrackit.dev.todolist;
 
 
 
+import java.sql.SQLException;
 import java.util.*;
 
 /**
@@ -26,19 +27,36 @@ public class MyListOfToDoMock {
     private int id;
 
     private void generateInitialList() {
-        toDoList.add(new ToDoBean(1,"sa ud florile"));
-        toDoList.add(new ToDoBean(2,"sa calc camasile"));
-        toDoList.add(new ToDoBean(3,"sa imi fac programare la dentist"));
-        toDoList.add(new ToDoBean(4,"sa verific presiunea la roata de la bicicleta"));
-        toDoList.add(new ToDoBean(5,"sa imi fac tema la geogra"));
-        toDoList.add(new ToDoBean(6,"sa imi sun bunica"));
-        id=6;
+//        toDoList.add(new ToDoBean(1,"sa ud florile"));
+//        toDoList.add(new ToDoBean(2,"sa calc camasile"));
+//        toDoList.add(new ToDoBean(3,"sa imi fac programare la dentist"));
+//        toDoList.add(new ToDoBean(4,"sa verific presiunea la roata de la bicicleta"));
+//        toDoList.add(new ToDoBean(5,"sa imi fac tema la geogra"));
+//        toDoList.add(new ToDoBean(6,"sa imi sun bunica"));
+//        id=6;
+        DataBase db=new DataBase();
+        try {
+            db.demoRead(this);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     };
 
    public void addItem(String value) {
-      id++;
-      toDoList.add(new ToDoBean(id,value));
-        }
+       toDoList= new ArrayList<ToDoBean>();
+       DataBase db=new DataBase(value,false);
+       try {
+           db.demoCreate();
+           db.demoRead(this);
+       } catch (ClassNotFoundException e) {
+           e.printStackTrace();
+       } catch (SQLException e) {
+           e.printStackTrace();
+       }
+
+   }
 
     public void doneItem(int index) {
         for (ListIterator<ToDoBean> iter = toDoList.listIterator(); iter.hasNext(); ) {
