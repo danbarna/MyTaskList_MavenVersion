@@ -46,24 +46,36 @@ public class ToDoListServlet extends HttpServlet {
 
         HttpSession session = request.getSession(true);
 
-        String action = request.getParameter(ACTION);
-        if (action != null && action.equals(LIST_ACTION)) {
-            listAction(request, response);
-        } else if (action != null && action.equals(ADD_ACTION)) {
-            addAction(request, response);
-        } else if (action != null && action.equals(DONE_ACTION)) {
-            doneAction(request, response);
-        }
-    }
+        String username =(String) session.getAttribute("username");
+        int userId =(Integer) session.getAttribute("userid");
 
-    private void listAction(HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("userid de pe session:"+userId);
+
+        if(username!=null) {
+
+            String action = request.getParameter(ACTION);
+            if (action != null && action.equals(LIST_ACTION)) {
+                listAction(request, response, userId);
+            } else if (action != null && action.equals(ADD_ACTION)) {
+                addAction(request, response, userId);
+            } else if (action != null && action.equals(DONE_ACTION)) {
+                doneAction(request, response, userId);
+            }
+        }
+        else {
+            System.out.println("nu este logat deci nu vede lista");
+        }
+        }
+
+
+    private void listAction(HttpServletRequest request, HttpServletResponse response, int userId) {
 
         System.out.println("list action");
         HttpSession session = request.getSession(true);
 
         // call db
 
-        MyListOfToDoMock myListObject = MyListOfToDoMock.getInstance();
+        MyListOfToDoMock myListObject = MyListOfToDoMock.getInstance(userId);
         myListObject.printList();
         List<ToDoBean> l = myListObject.getList();
 
@@ -79,6 +91,7 @@ public class ToDoListServlet extends HttpServlet {
                                 .add("name", element.getWhatToDo())
                                 .add("done", false)
                                 .add("id", element.getId())
+
                 );
 
             }
@@ -93,7 +106,7 @@ public class ToDoListServlet extends HttpServlet {
     }
 
 
-    private void doneAction(HttpServletRequest request, HttpServletResponse response) {
+    private void doneAction(HttpServletRequest request, HttpServletResponse response, int userId) {
 
         System.out.println("enter pe done");
 
@@ -101,10 +114,10 @@ public class ToDoListServlet extends HttpServlet {
 
         String idS = request.getParameter(ID_TASK);
         int id = Integer.parseInt(idS);
-        MyListOfToDoMock myListObject = MyListOfToDoMock.getInstance();
+        MyListOfToDoMock myListObject = MyListOfToDoMock.getInstance(userId);
 
        // myListObject.printList();
-myListObject.doneItem(id);
+myListObject.doneItem(id,userId);
 
         List<ToDoBean> l = myListObject.getList();
 //        for (ListIterator<ToDoBean> iterator = l.listIterator(); iterator.hasNext(); ) {
@@ -120,7 +133,7 @@ myListObject.doneItem(id);
         System.out.println("i am done");
     }
 
-    private void addAction(HttpServletRequest request, HttpServletResponse response) {
+    private void addAction(HttpServletRequest request, HttpServletResponse response, int userId) {
 
         System.out.println("add action");
 
@@ -129,10 +142,10 @@ myListObject.doneItem(id);
         String value = request.getParameter(VALUE_NEWTASK);
 
 
-        MyListOfToDoMock myListObject = MyListOfToDoMock.getInstance();
+        MyListOfToDoMock myListObject = MyListOfToDoMock.getInstance(userId);
         myListObject.printList();
 
-        myListObject.addItem(value);
+        myListObject.addItem(value, userId);
 
         System.out.println("now I am done");
 

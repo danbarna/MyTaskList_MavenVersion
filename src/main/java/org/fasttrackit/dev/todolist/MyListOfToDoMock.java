@@ -14,13 +14,14 @@ public class MyListOfToDoMock {
     private static MyListOfToDoMock m;
     private static DataBase db;
 
-    public static MyListOfToDoMock getInstance() {
 
-        if(m==null) {
+
+    public static MyListOfToDoMock getInstance(int userId) {
+      //  if(m==null) {
             m=new MyListOfToDoMock();
              db=new DataBase();
-            m.generateInitialList();
-        }
+            m.generateInitialList(userId);
+       // }
        return m;
     }
 
@@ -28,7 +29,7 @@ public class MyListOfToDoMock {
     private List<ToDoBean> toDoList = new ArrayList<ToDoBean>();
     private int id;
 
-    private void generateInitialList() {
+    private void generateInitialList(int userId) {
 //        toDoList.add(new ToDoBean(1,"sa ud florile"));
 //        toDoList.add(new ToDoBean(2,"sa calc camasile"));
 //        toDoList.add(new ToDoBean(3,"sa imi fac programare la dentist"));
@@ -38,7 +39,7 @@ public class MyListOfToDoMock {
 //        id=6;
 
         try {
-            db.demoRead(this);
+            db.demoRead(this,userId);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -47,11 +48,11 @@ public class MyListOfToDoMock {
         }
     };
 
-   public void addItem(String value) {
+   public void addItem(String value, int userId) {
        toDoList= new ArrayList<ToDoBean>();
        try {
-           db.demoCreate(value,false);
-           db.demoRead(this);
+           db.demoCreate(value,false,userId);
+           db.demoRead(this,userId);
 
        } catch (ClassNotFoundException e) {
            e.printStackTrace();
@@ -61,7 +62,7 @@ public class MyListOfToDoMock {
 
    }
 
-    public void doneItem(int index) {
+    public void doneItem(int index, int userId) {
 //        for (ListIterator<ToDoBean> iter = toDoList.listIterator(); iter.hasNext(); ) {
 //            ToDoBean element = iter.next();
 //
@@ -77,7 +78,7 @@ public class MyListOfToDoMock {
         toDoList= new ArrayList<ToDoBean>();;;;;
         try {
             db.demoDelete(index);
-            db.demoRead(this);
+            db.demoRead(this,userId);
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();

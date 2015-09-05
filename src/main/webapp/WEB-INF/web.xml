@@ -11,10 +11,17 @@
         <servlet-class>org.fasttrackit.dev.todolist.servlet.ToDoListServlet</servlet-class>
     </servlet>
 
-
+    <servlet>
+        <servlet-name>Login</servlet-name>
+        <servlet-class>org.fasttrackit.dev.todolist.servlet.LoginServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>ToDoList</servlet-name>
         <url-pattern>/items</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Login</servlet-name>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
 </web-app>
 

@@ -9,25 +9,24 @@ public class DataBase {
     private static Connection conn;
 
 
-    public DataBase()
-    {
+    public DataBase() {
     }
-    public void demoCreate(String whatToDo, boolean isDone) throws ClassNotFoundException, SQLException {
+
+    public void demoCreate(String whatToDo, boolean isDone, int userId) throws ClassNotFoundException, SQLException {
 
         System.out.println("incep");
         // 1. load driver
-        if (conn==null) {
+        if (conn == null) {
             conn = getConnection();
-        }
-        else
-        {
+        } else {
             System.out.println("----------------------deja am conex");
         }
         System.out.println("am obtinut conex");
         // 4. create a query statement
-        PreparedStatement pSt = conn.prepareStatement("INSERT INTO \"mytasklist\" (activitate,stare) VALUES (?,?)");
+        PreparedStatement pSt = conn.prepareStatement("INSERT INTO \"mytasklist\" (activitate,stare,\"userId\") VALUES (?,?,?)");
         pSt.setString(1, whatToDo);
-        pSt.setBoolean(2,isDone);
+        pSt.setBoolean(2, isDone);
+        pSt.setInt(3, userId);
 
 
         System.out.println("statement");
@@ -39,26 +38,30 @@ public class DataBase {
         pSt.close();
         System.out.println("gata");
     }
-    public  void demoRead(MyListOfToDoMock mm) throws ClassNotFoundException, SQLException {
+
+    public void demoRead(MyListOfToDoMock mm, int userId) throws ClassNotFoundException, SQLException {
         // 1. load driver
-        if (conn==null) {
+
+        System.out.println("in db userid:" + userId);
+
+        if (conn == null) {
             System.out.println("wwwwwwwwwwwww uite conex");
-            conn=getConnection();
-        }
-        else
-        {
+            conn = getConnection();
+        } else {
             System.out.println("----------------------deja am conex");
         }
         // 4. create a query statement
         Statement st = conn.createStatement();
 
         // 5. execute a query
-        ResultSet rs = st.executeQuery("SELECT activitate,stare,id FROM \"mytasklist\" where stare=false");
+        String query = "SELECT activitate,stare,id FROM \"mytasklist\" where stare=false and \"userId\" = " + userId;
+        System.out.println("q read:" + query);
+        ResultSet rs = st.executeQuery(query);
 
         // 6. iterate the result set and print the values
         while (rs.next()) {
             mm.getList().add(new ToDoBean(rs.getInt("id"), rs.getString("activitate")));
-            System.out.println( rs.getString("activitate"));
+            System.out.println(rs.getString("activitate"));
         }
 
         // 7. close the objects
@@ -66,13 +69,12 @@ public class DataBase {
         st.close();
 
     }
-    public  void demoDelete(int key) throws ClassNotFoundException, SQLException {
 
-        if (conn==null) {
+    public void demoDelete(int key) throws ClassNotFoundException, SQLException {
+
+        if (conn == null) {
             conn = getConnection();
-        }
-        else
-        {
+        } else {
             System.out.println("----------------------deja am conex");
         }
         // 4. create a query statement
